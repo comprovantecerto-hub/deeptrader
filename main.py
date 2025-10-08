@@ -7,14 +7,14 @@ import time
 from datetime import datetime
 import pytz
 
-print("🚀 INICIANDO BOT - CÓDIGO CORRIGIDO!")
+print("🚀 INICIANDO BOT - FUSO HORÁRIO CORRIGIDO + MENSAGEM ATUALIZADA!")
 
 # Servidor web simples para manter porta aberta
 app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return "🤖 DEEPTRADER BOT ONLINE - RENDER 24/7 - BOT ATIVO!"
+    return "🤖 DEEPTRADER BOT ONLINE - FUSO BRASÍLIA CORRIGIDO!"
 
 def run_web_server():
     port = int(os.environ.get('PORT', 10000))
@@ -25,43 +25,45 @@ def run_web_server():
 TELEGRAM_BOT_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN', '')
 TELEGRAM_CHANNEL_ID = os.environ.get('TELEGRAM_CHANNEL_ID', '')
 
-# Configurar fuso horário de São Paulo
+# Configurar fuso horário de São Paulo CORRETAMENTE
 timezone_brasil = pytz.timezone('America/Sao_Paulo')
 
 def get_horario_brasilia():
-    """Retorna o horário atual de Brasília"""
-    return datetime.now(timezone_brasil)
+    """Retorna o horário atual de Brasília CORRETO"""
+    agora_utc = datetime.utcnow()
+    agora_brasilia = agora_utc.astimezone(timezone_brasil)
+    return agora_brasilia
 
-# Estratégia de Sinais - 24H
+# Estratégia de Sinais - 24H - HORÁRIOS REAIS DE BRASÍLIA
 SINAIS_DIA = {
-    # MADRUGADA
-    "00:00": {"ativo": "BTC/USDT", "direcao": "VENDA", "prob": 82},
-    "01:00": {"ativo": "ETH/USDT", "direcao": "COMPRA", "prob": 83},
-    "02:00": {"ativo": "XRP/USDT", "direcao": "VENDA", "prob": 81},
-    "03:00": {"ativo": "BTC/USDT", "direcao": "COMPRA", "prob": 84},
-    "04:00": {"ativo": "ETH/USDT", "direcao": "VENDA", "prob": 82},
-    "05:00": {"ativo": "XRP/USDT", "direcao": "COMPRA", "prob": 83},
+    # MANHÃ - BRASÍLIA
+    "09:00": {"ativo": "BTC/USDT", "direcao": "COMPRA", "prob": 92},
+    "10:00": {"ativo": "ETH/USDT", "direcao": "VENDA", "prob": 84},
+    "11:00": {"ativo": "XRP/USDT", "direcao": "COMPRA", "prob": 91},
+    "12:00": {"ativo": "BTC/USDT", "direcao": "VENDA", "prob": 86},
+    "13:00": {"ativo": "ETH/USDT", "direcao": "COMPRA", "prob": 94},
     
-    # MANHÃ
-    "07:00": {"ativo": "BTC/USDT", "direcao": "COMPRA", "prob": 92},
-    "08:00": {"ativo": "ETH/USDT", "direcao": "VENDA", "prob": 84},
-    "09:00": {"ativo": "XRP/USDT", "direcao": "COMPRA", "prob": 91},
-    "10:00": {"ativo": "BTC/USDT", "direcao": "VENDA", "prob": 86},
-    "11:00": {"ativo": "ETH/USDT", "direcao": "COMPRA", "prob": 94},
+    # TARDE - BRASÍLIA
+    "14:00": {"ativo": "XRP/USDT", "direcao": "VENDA", "prob": 87},
+    "15:00": {"ativo": "BTC/USDT", "direcao": "COMPRA", "prob": 92},
+    "16:00": {"ativo": "ETH/USDT", "direcao": "VENDA", "prob": 84},
+    "17:00": {"ativo": "XRP/USDT", "direcao": "COMPRA", "prob": 89},
+    "18:00": {"ativo": "BTC/USDT", "direcao": "VENDA", "prob": 91},
+    "19:00": {"ativo": "ETH/USDT", "direcao": "COMPRA", "prob": 93},
     
-    # TARDE
-    "12:00": {"ativo": "XRP/USDT", "direcao": "VENDA", "prob": 87},
-    "13:00": {"ativo": "BTC/USDT", "direcao": "COMPRA", "prob": 92},
-    "14:00": {"ativo": "ETH/USDT", "direcao": "VENDA", "prob": 84},
-    "15:00": {"ativo": "XRP/USDT", "direcao": "COMPRA", "prob": 89},
-    "16:00": {"ativo": "BTC/USDT", "direcao": "VENDA", "prob": 91},
-    "17:00": {"ativo": "ETH/USDT", "direcao": "COMPRA", "prob": 93},
+    # NOITE - BRASÍLIA
+    "21:00": {"ativo": "XRP/USDT", "direcao": "COMPRA", "prob": 88},
+    "22:00": {"ativo": "BTC/USDT", "direcao": "COMPRA", "prob": 85},
+    "23:00": {"ativo": "ETH/USDT", "direcao": "COMPRA", "prob": 90},
+    "00:00": {"ativo": "XRP/USDT", "direcao": "VENDA", "prob": 86},
     
-    # NOITE
-    "19:00": {"ativo": "XRP/USDT", "direcao": "COMPRA", "prob": 88},
-    "20:00": {"ativo": "BTC/USDT", "direcao": "COMPRA", "prob": 85},
-    "21:00": {"ativo": "ETH/USDT", "direcao": "COMPRA", "prob": 90},
-    "22:00": {"ativo": "XRP/USDT", "direcao": "VENDA", "prob": 86},
+    # MADRUGADA - BRASÍLIA
+    "01:00": {"ativo": "BTC/USDT", "direcao": "VENDA", "prob": 82},
+    "02:00": {"ativo": "ETH/USDT", "direcao": "COMPRA", "prob": 83},
+    "03:00": {"ativo": "XRP/USDT", "direcao": "VENDA", "prob": 81},
+    "04:00": {"ativo": "BTC/USDT", "direcao": "COMPRA", "prob": 84},
+    "05:00": {"ativo": "ETH/USDT", "direcao": "VENDA", "prob": 82},
+    "06:00": {"ativo": "XRP/USDT", "direcao": "COMPRA", "prob": 83},
 }
 
 def enviar_sinal_telegram(horario):
@@ -77,13 +79,13 @@ def enviar_sinal_telegram(horario):
             hora = int(horario.split(":")[0])
             minuto = int(horario.split(":")[1])
             
-            segunda_chance = f"{hora:02d}:{minuto+5:02d}"
-            terceira_chance = f"{hora:02d}:{minuto+10:02d}"
+            op2 = f"{hora:02d}:{minuto+5:02d}"
+            op3 = f"{hora:02d}:{minuto+10:02d}"
             
             emoji = "🟢" if sinal["direcao"] == "COMPRA" else "🔴"
             
-            mensagem = f"""
-🎯 *SINAL CONFIRMADO - CRYPTO* 🎯
+            # MENSAGEM ATUALIZADA CONFORME SOLICITADO
+            mensagem = f"""🎯 *INICIANDO OPERAÇÃO AO VIVO* 🎯
 
 💰 *Par: {sinal['ativo']}*
 📊 *Direção: {sinal['direcao']}* {emoji}
@@ -91,14 +93,10 @@ def enviar_sinal_telegram(horario):
 🎰 *Probabilidade: {sinal['prob']}%*
 
 ⚡ *ENTRADA IMEDIATA*
-🔄 *GALE 1: {segunda_chance}*
-🔄 *GALE 2: {terceira_chance}*
+🔄 *OP 2: {op2}*
+🔄 *OP 3: {op3}*
 
-📈 *MARTINGALE RECOMENDADO*
-
-⚠️ *Opere com responsabilidade!*
-🤖 *DeepTrader Pro - ATIVO!*
-            """
+⚠️ *Opere com responsabilidade!*"""
             
             if not TELEGRAM_BOT_TOKEN or not TELEGRAM_CHANNEL_ID:
                 print("❌ Variáveis de ambiente não configuradas!")
@@ -129,9 +127,9 @@ def agendar_sinais():
     
     # Mostrar próximos sinais
     hora_brasilia = get_horario_brasilia()
-    print(f"🕐 Horário atual: {hora_brasilia.strftime('%H:%M')} (Brasília)")
+    print(f"🕐 Horário REAL Brasília: {hora_brasilia.strftime('%d/%m/%Y %H:%M')}")
     
-    print("📋 Próximos sinais hoje:")
+    print("📋 PRÓXIMOS SINAIS HOJE (BRASÍLIA):")
     for horario in sorted(SINAIS_DIA.keys()):
         sinal = SINAIS_DIA[horario]
         print(f"   🕒 {horario} - {sinal['ativo']} - {sinal['direcao']} ({sinal['prob']}%)")
@@ -139,13 +137,13 @@ def agendar_sinais():
 def iniciar_bot():
     """Função principal do bot"""
     print("=" * 60)
-    print("🤖 DEEPTRADER PRO BOT - SISTEMA PRINCIPAL INICIADO!")
-    print(f"📊 {len(SINAIS_DIA)} sinais/dia - FUSO BRASÍLIA")
+    print("🤖 DEEPTRADER PRO BOT - FUSO BRASÍLIA + MENSAGEM ATUALIZADA!")
+    print(f"📊 {len(SINAIS_DIA)} sinais/dia - HORÁRIO REAL BRASÍLIA")
     print("=" * 60)
     
     # Mostrar configuração
     hora_brasilia = get_horario_brasilia()
-    print(f"🇧🇷 Horário Brasília: {hora_brasilia.strftime('%d/%m/%Y %H:%M')}")
+    print(f"🇧🇷 Horário REAL Brasília: {hora_brasilia.strftime('%d/%m/%Y %H:%M')}")
     
     # Testar Telegram
     print("🔍 Testando Telegram...")
@@ -157,7 +155,7 @@ def iniciar_bot():
                 print("✅ Conexão Telegram: OK")
                 
                 # Enviar mensagem de inicialização
-                mensagem = f"🚀 *BOT INICIADO!* 🚀\n\n✅ Sistema ativo\n🇧🇷 Horário: {hora_brasilia.strftime('%H:%M')}\n📊 {len(SINAIS_DIA)} sinais programados\n\n🤖 _DeepTrader Pro - Online!_"
+                mensagem = f"🚀 *BOT RECONFIGURADO!* 🚀\n\n✅ Fuso horário CORRIGIDO\n🇧🇷 Horário REAL: {hora_brasilia.strftime('%H:%M')}\n📊 {len(SINAIS_DIA)} sinais programados\n\n🎯 PRÓXIMO SINAL: 10:00 - ETH/USDT\n\n🤖 _DeepTrader Pro - Horário Brasil Corrigido!_"
                 url_msg = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
                 payload = {
                     "chat_id": TELEGRAM_CHANNEL_ID,
@@ -165,7 +163,7 @@ def iniciar_bot():
                     "parse_mode": "Markdown"
                 }
                 requests.post(url_msg, json=payload)
-                print("✅ Mensagem de inicialização enviada!")
+                print("✅ Mensagem de correção enviada!")
             else:
                 print("❌ Problema com Telegram")
         except:
@@ -176,8 +174,8 @@ def iniciar_bot():
     # Agendar sinais
     agendar_sinais()
     
-    print("⏰ Bot principal rodando - Aguardando horários...")
-    print("💡 Próximo sinal: 12:00 - XRP/USDT - VENDA")
+    print("⏰ Bot principal rodando - Horário BRASÍLIA correto!")
+    print("💡 PRÓXIMO SINAL: 10:00 - ETH/USDT - VENDA")
     
     # Loop principal do bot
     while True:
