@@ -139,3 +139,60 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+def agendar_fotos_sessoes():
+    """Agenda todas as fotos de abertura/fechamento das sessões"""
+    
+    # SESSÃO MANHÃ
+    schedule.every().day.at("06:55").do(
+        enviar_foto_sessao, 
+        "https://i.imgur.com/cPc0zwt.jpg",  # Manhã Início
+        "🌅 *SESSÃO DA MANHÃ INICIANDO!*\n\n⏰ Início em 5 minutos!\n🔥 Prepare-se para os sinais!"
+    )
+    
+    schedule.every().day.at("11:16").do(
+        enviar_foto_sessao,
+        "https://i.imgur.com/HsxZegp.jpg",  # Manhã Fim
+        "✅ *SESSÃO DA MANHÃ ENCERRADA!*\n\n📊 Resultados consolidados!\n🔄 Próxima sessão: 12:00"
+    )
+    
+    # SESSÃO TARDE
+    schedule.every().day.at("11:55").do(
+        enviar_foto_sessao,
+        "https://i.imgur.com/b5Sqmda.jpg",  # Tarde Início
+        "🌇 *SESSÃO DA TARDE INICIANDO!*\n\n⏰ Início em 5 minutos!\n🎯 Foco nos trades!"
+    )
+    
+    schedule.every().day.at("17:16").do(
+        enviar_foto_sessao,
+        "https://i.imgur.com/XzCQTAQ.jpg",  # Tarde Fim
+        "✅ *SESSÃO DA TARDE ENCERRADA!*\n\n📈 Performance analisada!\n🌙 Próxima sessão: 19:00"
+    )
+    
+    # SESSÃO NOITE
+    schedule.every().day.at("18:55").do(
+        enviar_foto_sessao,
+        "https://i.imgur.com/xpQso5o.jpg",  # Noite Início
+        "🌃 *SESSÃO DA NOITE INICIANDO!*\n\n⏰ Início em 5 minutos!\n💫 Última sessão do dia!"
+    )
+    
+    schedule.every().day.at("23:16").do(
+        enviar_foto_sessao,
+        "https://i.imgur.com/FgWDjRo.jpg",  # Noite Fim
+        "✅ *SESSÃO DA NOITE ENCERRADA!*\n\n📋 Balanço final do dia!\n🌅 Amanhã tem mais!"
+    )
+    
+    # SESSÃO MADRUGADA
+    schedule.every().day.at("23:55").do(
+        enviar_foto_sessao,
+        "https://i.imgur.com/vepXQIt.jpg",  # Madrugada Início
+        "🌙 *SESSÃO DA MADRUGADA INICIANDO!*\n\n⏰ Início em 5 minutos!\n🌍 Mercado internacional ativo!"
+    )
+    
+    schedule.every().day.at("06:16").do(
+        enviar_foto_sessao,
+        "https://i.imgur.com/dcz7y31.jpg",  # Madrugada Fim
+        "✅ *SESSÃO DA MADRUGADA ENCERRADA!*\n\n🌅 Dia finalizado com sucesso!\n🔄 Novo ciclo em 07:00"
+    )
+    
+    print("📸 Fotos das sessões agendadas!")
