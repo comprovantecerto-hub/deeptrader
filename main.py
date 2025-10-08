@@ -1,8 +1,29 @@
+from flask import Flask
+import threading
 import os
 import requests
 import schedule
 import time
 from datetime import datetime
+
+# Servidor web simples para manter porta aberta
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return "🤖 DEEPTRADER BOT ONLINE - RENDER 24/7"
+
+def run_web_server():
+    port = int(os.environ.get('PORT', 10000))
+    app.run(host='0.0.0.0', port=port)
+
+# Iniciar servidor web em thread separada
+print("🌐 Iniciando servidor web para Render...")
+web_thread = threading.Thread(target=run_web_server)
+web_thread.daemon = True
+web_thread.start()
+
+print("✅ Servidor web rodando - Bot vai ficar 24/7 online!")
 
 # Configurações do Telegram
 TELEGRAM_BOT_TOKEN = os.environ['TELEGRAM_BOT_TOKEN']
@@ -93,7 +114,7 @@ def agendar_sinais():
     print(f"⏰ {len(SINAIS_DIA)} sinais agendados!")
 
 def main():
-    print("🤖 DEEPTRADER BOT INICIADO NO RAILWAY!")
+    print("🤖 DEEPTRADER BOT INICIADO NO RENDER!")
     print(f"📊 {len(SINAIS_DIA)} sinais/dia")
     print("⏰ Aguardando horários...")
     
@@ -102,7 +123,7 @@ def main():
         url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
         payload = {
             "chat_id": TELEGRAM_CHANNEL_ID,
-            "text": "🚀 *DEEPTRADER BOT ATIVADO NO RAILWAY!*\n\nSinais automáticos 24/7 iniciados!",
+            "text": "🚀 *DEEPTRADER BOT ATIVADO NO RENDER!*\n\nSinais automáticos 24/7 iniciados!",
             "parse_mode": "Markdown"
         }
         requests.post(url, json=payload)
