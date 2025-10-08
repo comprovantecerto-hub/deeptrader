@@ -67,7 +67,7 @@ SINAIS_DIA = {
 }
 
 def enviar_sinal_telegram(horario):
-    """Envia sinal para o Telegram"""
+    """Envia sinal para o Telegram - NOVO FORMATO"""
     try:
         if horario in SINAIS_DIA:
             sinal = SINAIS_DIA[horario]
@@ -84,18 +84,15 @@ def enviar_sinal_telegram(horario):
             
             emoji = "🟢" if sinal["direcao"] == "COMPRA" else "🔴"
             
-            mensagem = f"""🎯 *INICIANDO OPERAÇÃO AO VIVO* 🎯
+            # ✅ NOVO FORMATO SOLICITADO
+            mensagem = f"""✅ ATIVO {sinal['ativo']}
+🕒 Horário: {horario}
+🎯 Direção: {sinal['direcao']} {emoji}
+⏰ Expiração: 5 min
+📈 Probabilidade: {sinal['prob']}%
 
-💰 *Par: {sinal['ativo']}*
-📊 *Direção: {sinal['direcao']}* {emoji}
-⏰ *Horário: {horario}*
-🎰 *Probabilidade: {sinal['prob']}%*
-
-⚡ *ENTRADA IMEDIATA*
-🔄 *OP 2: {op2}*
-🔄 *OP 3: {op3}*
-
-⚠️ *Opere com responsabilidade!*"""
+🕒 OP 2: {op2}
+🕒 OP 3: {op3}"""
             
             if not TELEGRAM_BOT_TOKEN or not TELEGRAM_CHANNEL_ID:
                 print("❌ Variáveis de ambiente não configuradas!")
