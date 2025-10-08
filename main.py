@@ -205,36 +205,34 @@ def iniciar_bot_principal():
             print(f"❌ ERRO NO LOOP: {e}")
             time.sleep(10)
 
-# 🚀 INICIAR TUDO CORRETAMENTE - VERSÃO CORRIGIDA
+# 🚀 INICIAR TUDO CORRETAMENTE - VERSÃO DEFINITIVA
 if __name__ == "__main__":
     print("🚀 INICIANDO SISTEMA COMPLETO...")
     
-    # Primeiro: iniciar servidor web em thread SEPARADA (background)
+    # INICIAR BOT PRINCIPAL PRIMEIRO (na thread principal)
+    print("🤖 INICIANDO BOT PRINCIPAL...")
+    bot_thread = threading.Thread(target=iniciar_bot_principal)
+    bot_thread.daemon = True
+    bot_thread.start()
+    print("✅ BOT PRINCIPAL INICIADO EM THREAD SEPARADA!")
+    
+    # Esperar 2 segundos para o bot estabilizar
+    time.sleep(2)
+    
+    # DEPOIS iniciar servidor web (em outra thread)
     print("🌐 INICIANDO SERVIDOR WEB EM BACKGROUND...")
     web_thread = threading.Thread(target=run_web_server)
     web_thread.daemon = True
     web_thread.start()
     print("✅ SERVIDOR WEB INICIADO EM BACKGROUND!")
     
-    # Esperar 3 segundos para o servidor web estabilizar
-    time.sleep(3)
-    
-    # Segundo: iniciar o BOT PRINCIPAL na thread PRINCIPAL (não bloqueante)
-    print("🤖 INICIANDO BOT PRINCIPAL NA THREAD PRINCIPAL...")
-    
-    # Usar threading para o bot principal também
-    bot_thread = threading.Thread(target=iniciar_bot_principal)
-    bot_thread.daemon = True
-    bot_thread.start()
-    
-    print("✅ BOT PRINCIPAL INICIADO EM THREAD SEPARADA!")
     print("🎉 SISTEMA COMPLETO INICIADO - AGUARDANDO SINAIS...")
     
     # Manter a thread principal viva
     try:
         while True:
-            time.sleep(60)  # Verificar a cada minuto se está vivo
+            time.sleep(30)
             hora = get_horario_brasilia().strftime('%H:%M:%S')
             print(f"💓 Sistema ativo - {hora}")
     except KeyboardInterrupt:
-        print("🛑 Sistema interrompido pelo usuário")
+        print("🛑 Sistema interrompido")
