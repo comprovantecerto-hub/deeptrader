@@ -1,5 +1,6 @@
-requests
-schedule
-python-telegram-bot
-flask
-gunicorn
+requests==2.32.5
+schedule==1.2.2
+python-telegram-bot==22.5
+flask==3.1.2
+gunicorn==23.0.0
+pytz==2024.1
