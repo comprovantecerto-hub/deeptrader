@@ -4,10 +4,13 @@ import os
 import requests
 import schedule
 import time
-from datetime import datetime
+from datetime import datetime, timedelta, time as dtime
 import pytz
 
 print("🚀 INICIANDO BOT - CÓDIGO URGENTE CORRIGIDO!")
+
+# DEBUG: validar timezone do servidor
+print("⏱️ Server UTC now:", datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"))
 
 # Servidor web simples para manter porta aberta
 app = Flask(__name__)
@@ -75,12 +78,16 @@ def enviar_sinal_telegram(horario):
             hora_brasilia = get_horario_brasilia().strftime('%H:%M')
             print(f"🎯 [{hora_brasilia}] ENVIANDO SINAL {horario} - {sinal['ativo']} {sinal['direcao']}")
             
-            # Calcular OP 2 e OP 3
-            hora = int(horario.split(":")[0])
-            minuto = int(horario.split(":")[1])
-            
-            op2 = f"{hora:02d}:{minuto+5:02d}"
-            op3 = f"{hora:02d}:{minuto+10:02d}"
+            # Calcular OP 2 e OP 3 com timedelta (corrige overflow)
+            try:
+                base_dt = datetime.strptime(horario, "%H:%M")
+            except Exception:
+                # fallback simples caso formato inesperado
+                base_dt = datetime.utcnow().replace(hour=int(horario.split(":")[0]), minute=int(horario.split(":")[1]), second=0, microsecond=0)
+            op2_dt = base_dt + timedelta(minutes=5)
+            op3_dt = base_dt + timedelta(minutes=10)
+            op2 = op2_dt.strftime("%H:%M")
+            op3 = op3_dt.strftime("%H:%M")
             
             emoji = "🟢" if sinal["direcao"] == "COMPRA" else "🔴"
             
@@ -106,12 +113,22 @@ def enviar_sinal_telegram(horario):
             }
             
             print(f"📤 Enviando para Telegram: {sinal['ativo']} {sinal['direcao']}")
-            response = requests.post(url, json=payload)
-            
-            if response.status_code == 200:
-                print(f"✅✅✅ SINAL {horario} ENVIADO COM SUCESSO! ✅✅✅")
-            else:
-                print(f"❌ ERRO {response.status_code}: {response.text}")
+            # Envio com 1 retry (duas tentativas no total)
+            max_attempts = 2
+            for attempt in range(1, max_attempts + 1):
+                try:
+                    response = requests.post(url, json=payload, timeout=10)
+                    if response.status_code == 200:
+                        print(f"✅✅✅ SINAL {horario} ENVIADO COM SUCESSO! ✅✅✅")
+                        break
+                    else:
+                        print(f"❌ ERRO {response.status_code} (tentativa {attempt}): {response.text}")
+                except Exception as e:
+                    print(f"❌ EXCEPTION no envio (tentativa {attempt}): {e}")
+                if attempt < max_attempts:
+                    time.sleep(1)  # pequeno backoff
+                else:
+                    print(f"❌ Falha ao enviar sinal {horario} após {max_attempts} tentativas.")
                 
     except Exception as e:
         print(f"❌ ERRO CRÍTICO em {horario}: {e}")
@@ -146,7 +163,7 @@ def testar_telegram():
         if response.status_code == 200:
             print("✅ CONEXÃO TELEGRAM: OK")
             
-            # Enviar mensagem de teste
+            # Enviar mensagem de teste com retry simples
             hora_brasilia = get_horario_brasilia().strftime('%H:%M')
             mensagem = f"🔧 *BOT RECONFIGURADO - TESTE* 🔧\n\n✅ Sistema corrigido\n🇧🇷 Horário: {hora_brasilia}\n📊 {len(SINAIS_DIA)} sinais agendados\n\n⚡ *PRÓXIMOS SINAIS:*\n• 11:00 - XRP/USDT - COMPRA\n• 12:00 - BTC/USDT - VENDA\n\n🤖 _Bot operacional!_"
             
@@ -156,12 +173,21 @@ def testar_telegram():
                 "text": mensagem,
                 "parse_mode": "Markdown"
             }
-            response_msg = requests.post(url_msg, json=payload, timeout=10)
-            
-            if response_msg.status_code == 200:
-                print("✅ MENSAGEM DE TESTE ENVIADA!")
-            else:
-                print(f"❌ ERRO AO ENVIAR TESTE: {response_msg.status_code}")
+            max_attempts = 2
+            for attempt in range(1, max_attempts + 1):
+                try:
+                    response_msg = requests.post(url_msg, json=payload, timeout=10)
+                    if response_msg.status_code == 200:
+                        print("✅ MENSAGEM DE TESTE ENVIADA!")
+                        break
+                    else:
+                        print(f"❌ ERRO AO ENVIAR TESTE (tentativa {attempt}): {response_msg.status_code} - {response_msg.text}")
+                except Exception as e:
+                    print(f"❌ EXCEPTION no envio do teste (tentativa {attempt}): {e}")
+                if attempt < max_attempts:
+                    time.sleep(1)
+                else:
+                    print("❌ Falha ao enviar mensagem de teste após tentativas.")
             
             return True
         else:
