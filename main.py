@@ -7,24 +7,19 @@ import time
 from datetime import datetime
 import pytz
 
+print("🚀 INICIANDO BOT - CÓDIGO CORRIGIDO!")
+
 # Servidor web simples para manter porta aberta
 app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return "🤖 DEEPTRADER BOT ONLINE - RENDER 24/7 - CÓDIGO ATUALIZADO v3"
+    return "🤖 DEEPTRADER BOT ONLINE - RENDER 24/7 - BOT ATIVO!"
 
 def run_web_server():
     port = int(os.environ.get('PORT', 10000))
+    print(f"🌐 Servidor web na porta {port}")
     app.run(host='0.0.0.0', port=port)
-
-# Iniciar servidor web em thread separada
-print("🌐 Iniciando servidor web para Render...")
-web_thread = threading.Thread(target=run_web_server)
-web_thread.daemon = True
-web_thread.start()
-
-print("✅ Servidor web rodando - Bot vai ficar 24/7 online!")
 
 # Configurações do Telegram
 TELEGRAM_BOT_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN', '')
@@ -37,7 +32,7 @@ def get_horario_brasilia():
     """Retorna o horário atual de Brasília"""
     return datetime.now(timezone_brasil)
 
-# Estratégia de Sinais - 24H - SEUS SINAIS ORIGINAIS
+# Estratégia de Sinais - 24H
 SINAIS_DIA = {
     # MADRUGADA
     "00:00": {"ativo": "BTC/USDT", "direcao": "VENDA", "prob": 82},
@@ -68,9 +63,6 @@ SINAIS_DIA = {
     "21:00": {"ativo": "ETH/USDT", "direcao": "COMPRA", "prob": 90},
     "22:00": {"ativo": "XRP/USDT", "direcao": "VENDA", "prob": 86},
 }
-
-print(f"🔍 VERIFICAÇÃO: Código ATUALIZADO v3 com {len(SINAIS_DIA)} sinais!")
-print(f"🇧🇷 Fuso horário: Brasília")
 
 def enviar_sinal_telegram(horario):
     """Envia sinal para o Telegram"""
@@ -105,7 +97,7 @@ def enviar_sinal_telegram(horario):
 📈 *MARTINGALE RECOMENDADO*
 
 ⚠️ *Opere com responsabilidade!*
-🤖 *DeepTrader Pro - v3*
+🤖 *DeepTrader Pro - ATIVO!*
             """
             
             if not TELEGRAM_BOT_TOKEN or not TELEGRAM_CHANNEL_ID:
@@ -144,81 +136,50 @@ def agendar_sinais():
         sinal = SINAIS_DIA[horario]
         print(f"   🕒 {horario} - {sinal['ativo']} - {sinal['direcao']} ({sinal['prob']}%)")
 
-def teste_telegram():
-    """Testa a conexão com Telegram"""
-    print("🔍 Testando conexão com Telegram...")
-    try:
-        if not TELEGRAM_BOT_TOKEN:
-            print("❌ TELEGRAM_BOT_TOKEN não configurado!")
-            return False
-        if not TELEGRAM_CHANNEL_ID:
-            print("❌ TELEGRAM_CHANNEL_ID não configurado!")
-            return False
-            
-        url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/getMe"
-        response = requests.get(url)
-        
-        if response.status_code == 200:
-            print("✅ Conexão Telegram: OK")
-            
-            # Enviar mensagem de teste
-            hora_brasilia = get_horario_brasilia().strftime('%H:%M')
-            mensagem = f"""🚀 *DEEPTRADER PRO - SISTEMA ATIVADO v3* 🚀
-
-✅ *Bot reconfigurado com sucesso!*
-🇧🇷 *Fuso horário: Brasília*
-⏰ *Horário atual: {hora_brasilia}*
-📊 *{len(SINAIS_DIA)} sinais diários*
-
-🎯 *Próximos sinais hoje:*
-• 12:00 - XRP/USDT - VENDA (87%)
-• 13:00 - BTC/USDT - COMPRA (92%)
-• 14:00 - ETH/USDT - VENDA (84%)
-
-🤖 _Sistema 24/7 funcionando!_"""
-            
-            url_msg = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
-            payload = {
-                "chat_id": TELEGRAM_CHANNEL_ID,
-                "text": mensagem,
-                "parse_mode": "Markdown"
-            }
-            response_msg = requests.post(url_msg, json=payload)
-            
-            if response_msg.status_code == 200:
-                print("✅ Mensagem de teste enviada com sucesso!")
-            else:
-                print(f"❌ Erro ao enviar mensagem: {response_msg.status_code}")
-                
-            return True
-        else:
-            print(f"❌ Telegram error: {response.status_code}")
-            return False
-    except Exception as e:
-        print(f"❌ Teste Telegram falhou: {e}")
-        return False
-
-def main():
-    print("=" * 50)
-    print("🤖 DEEPTRADER PRO BOT - CÓDIGO ATUALIZADO v3")
+def iniciar_bot():
+    """Função principal do bot"""
+    print("=" * 60)
+    print("🤖 DEEPTRADER PRO BOT - SISTEMA PRINCIPAL INICIADO!")
     print(f"📊 {len(SINAIS_DIA)} sinais/dia - FUSO BRASÍLIA")
-    print("=" * 50)
+    print("=" * 60)
     
     # Mostrar configuração
     hora_brasilia = get_horario_brasilia()
     print(f"🇧🇷 Horário Brasília: {hora_brasilia.strftime('%d/%m/%Y %H:%M')}")
     
     # Testar Telegram
-    if not teste_telegram():
-        print("⚠️  Problema com Telegram, mas bot continuará rodando...")
+    print("🔍 Testando Telegram...")
+    if TELEGRAM_BOT_TOKEN and TELEGRAM_CHANNEL_ID:
+        try:
+            url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/getMe"
+            response = requests.get(url)
+            if response.status_code == 200:
+                print("✅ Conexão Telegram: OK")
+                
+                # Enviar mensagem de inicialização
+                mensagem = f"🚀 *BOT INICIADO!* 🚀\n\n✅ Sistema ativo\n🇧🇷 Horário: {hora_brasilia.strftime('%H:%M')}\n📊 {len(SINAIS_DIA)} sinais programados\n\n🤖 _DeepTrader Pro - Online!_"
+                url_msg = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
+                payload = {
+                    "chat_id": TELEGRAM_CHANNEL_ID,
+                    "text": mensagem,
+                    "parse_mode": "Markdown"
+                }
+                requests.post(url_msg, json=payload)
+                print("✅ Mensagem de inicialização enviada!")
+            else:
+                print("❌ Problema com Telegram")
+        except:
+            print("⚠️  Erro no Telegram, mas bot continua...")
+    else:
+        print("❌ Variáveis de ambiente não configuradas")
     
     # Agendar sinais
     agendar_sinais()
     
-    print("⏰ Bot rodando - Aguardando horários dos sinais...")
+    print("⏰ Bot principal rodando - Aguardando horários...")
     print("💡 Próximo sinal: 12:00 - XRP/USDT - VENDA")
     
-    # Loop principal
+    # Loop principal do bot
     while True:
         try:
             schedule.run_pending()
@@ -227,5 +188,14 @@ def main():
             print(f"❌ Erro no loop: {e}")
             time.sleep(30)
 
+# Iniciar servidor web em thread separada
+print("🌐 Iniciando servidor web em thread separada...")
+web_thread = threading.Thread(target=run_web_server)
+web_thread.daemon = True
+web_thread.start()
+
+print("✅ Servidor web rodando em background!")
+
+# INICIAR O BOT PRINCIPAL
 if __name__ == "__main__":
-    main()
+    iniciar_bot()
