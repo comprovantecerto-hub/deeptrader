@@ -34,36 +34,36 @@ def get_horario_brasilia():
     agora = datetime.now(timezone_brasil)
     return agora
 
-# Estratégia de Sinais - 24H - HORÁRIOS REAIS DE BRASÍLIA
+# Estratégia de Sinais - 24H - HORÁRIOS UTC (Render)
 SINAIS_DIA = {
-    # MANHÃ - BRASÍLIA
-    "10:00": {"ativo": "ETH/USDT", "direcao": "VENDA", "prob": 84},
-    "11:00": {"ativo": "XRP/USDT", "direcao": "COMPRA", "prob": 91},
-    "12:00": {"ativo": "BTC/USDT", "direcao": "VENDA", "prob": 86},
-    "13:00": {"ativo": "ETH/USDT", "direcao": "COMPRA", "prob": 94},
+    # MANHÃ - UTC (Brasília -3h)
+    "13:00": {"ativo": "ETH/USDT", "direcao": "VENDA", "prob": 84},  # 10:00 BR
+    "14:00": {"ativo": "XRP/USDT", "direcao": "COMPRA", "prob": 91}, # 11:00 BR
+    "15:00": {"ativo": "BTC/USDT", "direcao": "VENDA", "prob": 86},  # 12:00 BR
+    "16:00": {"ativo": "ETH/USDT", "direcao": "COMPRA", "prob": 94}, # 13:00 BR
     
-    # TARDE - BRASÍLIA
-    "14:00": {"ativo": "XRP/USDT", "direcao": "VENDA", "prob": 87},
-    "15:00": {"ativo": "BTC/USDT", "direcao": "COMPRA", "prob": 92},
-    "16:00": {"ativo": "ETH/USDT", "direcao": "VENDA", "prob": 84},
-    "17:00": {"ativo": "XRP/USDT", "direcao": "COMPRA", "prob": 89},
-    "18:00": {"ativo": "BTC/USDT", "direcao": "VENDA", "prob": 91},
-    "19:00": {"ativo": "ETH/USDT", "direcao": "COMPRA", "prob": 93},
+    # TARDE - UTC
+    "17:00": {"ativo": "XRP/USDT", "direcao": "VENDA", "prob": 87},  # 14:00 BR
+    "18:00": {"ativo": "BTC/USDT", "direcao": "COMPRA", "prob": 92}, # 15:00 BR
+    "19:00": {"ativo": "ETH/USDT", "direcao": "VENDA", "prob": 84},  # 16:00 BR
+    "20:00": {"ativo": "XRP/USDT", "direcao": "COMPRA", "prob": 89}, # 17:00 BR
+    "21:00": {"ativo": "BTC/USDT", "direcao": "VENDA", "prob": 91},  # 18:00 BR
+    "22:00": {"ativo": "ETH/USDT", "direcao": "COMPRA", "prob": 93}, # 19:00 BR
     
-    # NOITE - BRASÍLIA
-    "21:00": {"ativo": "XRP/USDT", "direcao": "COMPRA", "prob": 88},
-    "22:00": {"ativo": "BTC/USDT", "direcao": "COMPRA", "prob": 85},
-    "23:00": {"ativo": "ETH/USDT", "direcao": "COMPRA", "prob": 90},
-    "00:00": {"ativo": "XRP/USDT", "direcao": "VENDA", "prob": 86},
+    # NOITE - UTC
+    "00:00": {"ativo": "XRP/USDT", "direcao": "COMPRA", "prob": 88}, # 21:00 BR
+    "01:00": {"ativo": "BTC/USDT", "direcao": "COMPRA", "prob": 85}, # 22:00 BR
+    "02:00": {"ativo": "ETH/USDT", "direcao": "COMPRA", "prob": 90}, # 23:00 BR
+    "03:00": {"ativo": "XRP/USDT", "direcao": "VENDA", "prob": 86},  # 00:00 BR
     
-    # MADRUGADA - BRASÍLIA
-    "01:00": {"ativo": "BTC/USDT", "direcao": "VENDA", "prob": 82},
-    "02:00": {"ativo": "ETH/USDT", "direcao": "COMPRA", "prob": 83},
-    "03:00": {"ativo": "XRP/USDT", "direcao": "VENDA", "prob": 81},
-    "04:00": {"ativo": "BTC/USDT", "direcao": "COMPRA", "prob": 84},
-    "05:00": {"ativo": "ETH/USDT", "direcao": "VENDA", "prob": 82},
-    "06:00": {"ativo": "XRP/USDT", "direcao": "COMPRA", "prob": 83},
-    "09:00": {"ativo": "BTC/USDT", "direcao": "COMPRA", "prob": 92},
+    # MADRUGADA - UTC
+    "04:00": {"ativo": "BTC/USDT", "direcao": "VENDA", "prob": 82},  # 01:00 BR
+    "05:00": {"ativo": "ETH/USDT", "direcao": "COMPRA", "prob": 83}, # 02:00 BR
+    "06:00": {"ativo": "XRP/USDT", "direcao": "VENDA", "prob": 81},  # 03:00 BR
+    "07:00": {"ativo": "BTC/USDT", "direcao": "COMPRA", "prob": 84}, # 04:00 BR
+    "08:00": {"ativo": "ETH/USDT", "direcao": "VENDA", "prob": 82},  # 05:00 BR
+    "09:00": {"ativo": "XRP/USDT", "direcao": "COMPRA", "prob": 83}, # 06:00 BR
+    "12:00": {"ativo": "BTC/USDT", "direcao": "COMPRA", "prob": 92}, # 09:00 BR
 }
 
 def enviar_sinal_telegram(horario):
