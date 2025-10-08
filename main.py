@@ -7,37 +7,36 @@ import time
 from datetime import datetime
 import pytz
 
-print("🚀 INICIANDO BOT - FUSO HORÁRIO CORRIGIDO + MENSAGEM ATUALIZADA!")
+print("🚀 INICIANDO BOT - CÓDIGO URGENTE CORRIGIDO!")
 
 # Servidor web simples para manter porta aberta
 app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return "🤖 DEEPTRADER BOT ONLINE - FUSO BRASÍLIA CORRIGIDO!"
+    return "🤖 DEEPTRADER BOT ONLINE - SERVIDOR ATIVO!"
 
 def run_web_server():
+    """Executa servidor web em thread SEPARADA"""
     port = int(os.environ.get('PORT', 10000))
-    print(f"🌐 Servidor web na porta {port}")
-    app.run(host='0.0.0.0', port=port)
+    print(f"🌐 Servidor web iniciando na porta {port}...")
+    app.run(host='0.0.0.0', port=port, debug=False, use_reloader=False)
 
 # Configurações do Telegram
 TELEGRAM_BOT_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN', '')
 TELEGRAM_CHANNEL_ID = os.environ.get('TELEGRAM_CHANNEL_ID', '')
 
-# Configurar fuso horário de São Paulo CORRETAMENTE
+# Configurar fuso horário de São Paulo
 timezone_brasil = pytz.timezone('America/Sao_Paulo')
 
 def get_horario_brasilia():
-    """Retorna o horário atual de Brasília CORRETO"""
-    agora_utc = datetime.utcnow()
-    agora_brasilia = agora_utc.astimezone(timezone_brasil)
-    return agora_brasilia
+    """Retorna o horário atual de Brasília"""
+    agora = datetime.now(timezone_brasil)
+    return agora
 
 # Estratégia de Sinais - 24H - HORÁRIOS REAIS DE BRASÍLIA
 SINAIS_DIA = {
     # MANHÃ - BRASÍLIA
-    "09:00": {"ativo": "BTC/USDT", "direcao": "COMPRA", "prob": 92},
     "10:00": {"ativo": "ETH/USDT", "direcao": "VENDA", "prob": 84},
     "11:00": {"ativo": "XRP/USDT", "direcao": "COMPRA", "prob": 91},
     "12:00": {"ativo": "BTC/USDT", "direcao": "VENDA", "prob": 86},
@@ -64,6 +63,7 @@ SINAIS_DIA = {
     "04:00": {"ativo": "BTC/USDT", "direcao": "COMPRA", "prob": 84},
     "05:00": {"ativo": "ETH/USDT", "direcao": "VENDA", "prob": 82},
     "06:00": {"ativo": "XRP/USDT", "direcao": "COMPRA", "prob": 83},
+    "09:00": {"ativo": "BTC/USDT", "direcao": "COMPRA", "prob": 92},
 }
 
 def enviar_sinal_telegram(horario):
@@ -73,9 +73,9 @@ def enviar_sinal_telegram(horario):
             sinal = SINAIS_DIA[horario]
             
             hora_brasilia = get_horario_brasilia().strftime('%H:%M')
-            print(f"🎯 [{hora_brasilia}] Enviando sinal {horario} - {sinal['ativo']} {sinal['direcao']}")
+            print(f"🎯 [{hora_brasilia}] ENVIANDO SINAL {horario} - {sinal['ativo']} {sinal['direcao']}")
             
-            # Calcular segundas chances
+            # Calcular OP 2 e OP 3
             hora = int(horario.split(":")[0])
             minuto = int(horario.split(":")[1])
             
@@ -84,7 +84,6 @@ def enviar_sinal_telegram(horario):
             
             emoji = "🟢" if sinal["direcao"] == "COMPRA" else "🔴"
             
-            # MENSAGEM ATUALIZADA CONFORME SOLICITADO
             mensagem = f"""🎯 *INICIANDO OPERAÇÃO AO VIVO* 🎯
 
 💰 *Par: {sinal['ativo']}*
@@ -109,91 +108,118 @@ def enviar_sinal_telegram(horario):
                 "parse_mode": "Markdown"
             }
             
+            print(f"📤 Enviando para Telegram: {sinal['ativo']} {sinal['direcao']}")
             response = requests.post(url, json=payload)
             
             if response.status_code == 200:
-                print(f"✅ Sinal {horario} enviado com SUCESSO!")
+                print(f"✅✅✅ SINAL {horario} ENVIADO COM SUCESSO! ✅✅✅")
             else:
-                print(f"❌ Erro {response.status_code} ao enviar sinal {horario}")
+                print(f"❌ ERRO {response.status_code}: {response.text}")
                 
     except Exception as e:
-        print(f"❌ Erro em {horario}: {e}")
+        print(f"❌ ERRO CRÍTICO em {horario}: {e}")
 
 def agendar_sinais():
     """Agenda todos os sinais do dia"""
+    print("⏰ AGENDANDO SINAIS...")
     for horario in SINAIS_DIA.keys():
         schedule.every().day.at(horario).do(enviar_sinal_telegram, horario)
-    print(f"⏰ {len(SINAIS_DIA)} sinais agendados!")
+    print(f"✅ {len(SINAIS_DIA)} SINAIS AGENDADOS!")
     
     # Mostrar próximos sinais
     hora_brasilia = get_horario_brasilia()
-    print(f"🕐 Horário REAL Brasília: {hora_brasilia.strftime('%d/%m/%Y %H:%M')}")
+    print(f"🇧🇷 HORÁRIO BRASÍLIA: {hora_brasilia.strftime('%d/%m/%Y %H:%M')}")
     
-    print("📋 PRÓXIMOS SINAIS HOJE (BRASÍLIA):")
+    print("📋 PRÓXIMOS SINAIS HOJE:")
     for horario in sorted(SINAIS_DIA.keys()):
         sinal = SINAIS_DIA[horario]
         print(f"   🕒 {horario} - {sinal['ativo']} - {sinal['direcao']} ({sinal['prob']}%)")
 
-def iniciar_bot():
-    """Função principal do bot"""
-    print("=" * 60)
-    print("🤖 DEEPTRADER PRO BOT - FUSO BRASÍLIA + MENSAGEM ATUALIZADA!")
-    print(f"📊 {len(SINAIS_DIA)} sinais/dia - HORÁRIO REAL BRASÍLIA")
-    print("=" * 60)
+def testar_telegram():
+    """Testa a conexão com Telegram"""
+    print("🔍 TESTANDO CONEXÃO COM TELEGRAM...")
+    if not TELEGRAM_BOT_TOKEN or not TELEGRAM_CHANNEL_ID:
+        print("❌ VARIÁVEIS DE AMBIENTE NÃO CONFIGURADAS!")
+        return False
     
-    # Mostrar configuração
+    try:
+        url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/getMe"
+        response = requests.get(url, timeout=10)
+        
+        if response.status_code == 200:
+            print("✅ CONEXÃO TELEGRAM: OK")
+            
+            # Enviar mensagem de teste
+            hora_brasilia = get_horario_brasilia().strftime('%H:%M')
+            mensagem = f"🔧 *BOT RECONFIGURADO - TESTE* 🔧\n\n✅ Sistema corrigido\n🇧🇷 Horário: {hora_brasilia}\n📊 {len(SINAIS_DIA)} sinais agendados\n\n⚡ *PRÓXIMOS SINAIS:*\n• 11:00 - XRP/USDT - COMPRA\n• 12:00 - BTC/USDT - VENDA\n\n🤖 _Bot operacional!_"
+            
+            url_msg = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
+            payload = {
+                "chat_id": TELEGRAM_CHANNEL_ID,
+                "text": mensagem,
+                "parse_mode": "Markdown"
+            }
+            response_msg = requests.post(url_msg, json=payload, timeout=10)
+            
+            if response_msg.status_code == 200:
+                print("✅ MENSAGEM DE TESTE ENVIADA!")
+            else:
+                print(f"❌ ERRO AO ENVIAR TESTE: {response_msg.status_code}")
+            
+            return True
+        else:
+            print(f"❌ ERRO TELEGRAM: {response.status_code}")
+            return False
+    except Exception as e:
+        print(f"❌ ERRO NO TESTE: {e}")
+        return False
+
+def iniciar_bot_principal():
+    """Função principal do bot - CORRIGIDA"""
+    print("=" * 70)
+    print("🤖 DEEPTRADER PRO BOT - SISTEMA PRINCIPAL INICIADO!")
+    print(f"📊 {len(SINAIS_DIA)} SINAIS/ DIA - HORÁRIO BRASÍLIA")
+    print("=" * 70)
+    
+    # Mostrar horário atual
     hora_brasilia = get_horario_brasilia()
-    print(f"🇧🇷 Horário REAL Brasília: {hora_brasilia.strftime('%d/%m/%Y %H:%M')}")
+    print(f"🇧🇷 HORÁRIO ATUAL: {hora_brasilia.strftime('%d/%m/%Y %H:%M:%S')}")
     
     # Testar Telegram
-    print("🔍 Testando Telegram...")
-    if TELEGRAM_BOT_TOKEN and TELEGRAM_CHANNEL_ID:
-        try:
-            url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/getMe"
-            response = requests.get(url)
-            if response.status_code == 200:
-                print("✅ Conexão Telegram: OK")
-                
-                # Enviar mensagem de inicialização
-                mensagem = f"🚀 *BOT RECONFIGURADO!* 🚀\n\n✅ Fuso horário CORRIGIDO\n🇧🇷 Horário REAL: {hora_brasilia.strftime('%H:%M')}\n📊 {len(SINAIS_DIA)} sinais programados\n\n🎯 PRÓXIMO SINAL: 10:00 - ETH/USDT\n\n🤖 _DeepTrader Pro - Horário Brasil Corrigido!_"
-                url_msg = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
-                payload = {
-                    "chat_id": TELEGRAM_CHANNEL_ID,
-                    "text": mensagem,
-                    "parse_mode": "Markdown"
-                }
-                requests.post(url_msg, json=payload)
-                print("✅ Mensagem de correção enviada!")
-            else:
-                print("❌ Problema com Telegram")
-        except:
-            print("⚠️  Erro no Telegram, mas bot continua...")
-    else:
-        print("❌ Variáveis de ambiente não configuradas")
+    testar_telegram()
     
     # Agendar sinais
     agendar_sinais()
     
-    print("⏰ Bot principal rodando - Horário BRASÍLIA correto!")
-    print("💡 PRÓXIMO SINAL: 10:00 - ETH/USDT - VENDA")
+    print("🚀 BOT PRINCIPAL RODANDO - AGUARDANDO SINAIS...")
+    print("💡 PRÓXIMO SINAL: 11:00 - XRP/USDT - COMPRA")
     
-    # Loop principal do bot
+    # Loop principal do bot - AGORA FUNCIONANDO
+    contador = 0
     while True:
         try:
             schedule.run_pending()
+            contador += 1
+            if contador % 30 == 0:  # Log a cada 30 segundos
+                hora = get_horario_brasilia().strftime('%H:%M:%S')
+                print(f"⏰ Bot ativo - {hora} - Aguardando sinais...")
             time.sleep(1)
         except Exception as e:
-            print(f"❌ Erro no loop: {e}")
-            time.sleep(30)
+            print(f"❌ ERRO NO LOOP: {e}")
+            time.sleep(10)
 
-# Iniciar servidor web em thread separada
-print("🌐 Iniciando servidor web em thread separada...")
-web_thread = threading.Thread(target=run_web_server)
-web_thread.daemon = True
-web_thread.start()
-
-print("✅ Servidor web rodando em background!")
-
-# INICIAR O BOT PRINCIPAL
+# 🚀 INICIAR TUDO CORRETAMENTE
 if __name__ == "__main__":
-    iniciar_bot()
+    # Primeiro: iniciar servidor web em thread SEPARADA
+    print("🌐 INICIANDO SERVIDOR WEB EM THREAD SEPARADA...")
+    web_thread = threading.Thread(target=run_web_server)
+    web_thread.daemon = True  # Permite que o programa termine se apenas esta thread estiver rodando
+    web_thread.start()
+    print("✅ SERVIDOR WEB INICIADO EM BACKGROUND!")
+    
+    # Esperar um pouco para o servidor iniciar
+    time.sleep(2)
+    
+    # Segundo: iniciar o bot principal na thread PRINCIPAL
+    print("🤖 INICIANDO BOT PRINCIPAL...")
+    iniciar_bot_principal()
